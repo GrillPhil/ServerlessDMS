@@ -66,14 +66,18 @@ namespace ServerlessDMS
             // Upload attachment to Sharepoint
             var fileService = new FileService(authenticationService, config["graphEndpoint"]);
             var path = $"{config["graphEndpoint"]}sites/{config["siteId"]}/drive/items/";
-            var driveItem = await fileService.UploadFileAsync($"{path}root:/{firstAttachment.Name}:/content", firstAttachment.ContentType, Convert.FromBase64String(firstAttachment.ContentBytes));
+            var driveItem = await fileService.UploadFileAsync($"{path}root:/{firstAttachment.Name}:/content", 
+                firstAttachment.ContentType, 
+                Convert.FromBase64String(firstAttachment.ContentBytes));
 
             // Convert attachment to PDF
             var pdfBytes = await fileService.ConvertFileAsync(path, driveItem.Id, "pdf");
             var pdfName = $"{firstAttachment.Name}.pdf";
 
             // Upload pdf version of attachment to Sharepoint
-            var pdfItem = await fileService.UploadFileAsync($"{path}root:/{pdfName}:/content", "application/pdf", pdfBytes);
+            var pdfItem = await fileService.UploadFileAsync($"{path}root:/{pdfName}:/content", 
+                "application/pdf", 
+                pdfBytes);
 
             log.LogInformation($"Processed notification");
             return new StatusCodeResult(202);
